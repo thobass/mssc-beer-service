@@ -26,10 +26,10 @@ public class BeerLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        loadBeerObjects();
+       // loadBeerObjects();
     }
 
-    private void loadBeerObjects() {
+   /* private void loadBeerObjects() {
         if(beerRepository.count() == 0){
 
             beerRepository.save(Beer.builder()
@@ -59,5 +59,5 @@ public class BeerLoader implements CommandLineRunner {
                     .price(new BigDecimal("11.95"))
                     .build());
         }
-    }
+    } */
 }

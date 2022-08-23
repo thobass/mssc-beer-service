@@ -1,14 +1,21 @@
 package rocks.basset.msscbeerservice.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import rocks.basset.msscbeerservice.domain.Beer;
 import rocks.basset.msscbeerservice.repositories.BeerRepository;
 import rocks.basset.msscbeerservice.web.controller.NotFoundException;
 import rocks.basset.msscbeerservice.web.mapper.BeerMapper;
 import rocks.basset.msscbeerservice.web.model.BeerDto;
+import rocks.basset.msscbeerservice.web.model.BeerPagedList;
+import rocks.basset.msscbeerservice.web.model.BeerStyleEnum;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +23,34 @@ public class BeerServiceImpl implements BeerService {
 
     private final BeerRepository beerRepository;
     private final BeerMapper beerMapper;
+
+    @Override
+    public BeerPagedList listBeers(String beerName, BeerStyleEnum beerStyle, PageRequest pageRequest) {
+        Page<Beer> beerPage;
+
+        if (!ObjectUtils.isEmpty(beerName) && !ObjectUtils.isEmpty(beerStyle)) {
+            //search both
+            beerPage = beerRepository.findAllByBeerNameAndBeerStyle(beerName, beerStyle, pageRequest);
+        } else if (!ObjectUtils.isEmpty(beerName) && ObjectUtils.isEmpty(beerStyle)) {
+            //search beer_service name
+            beerPage = beerRepository.findAllByBeerName(beerName, pageRequest);
+        } else if (ObjectUtils.isEmpty(beerName) && !ObjectUtils.isEmpty(beerStyle)) {
+            //search beer_service style
+            beerPage = beerRepository.findAllByBeerStyle(beerStyle, pageRequest);
+        } else {
+            beerPage = beerRepository.findAll(pageRequest);
+        }
+
+        return new BeerPagedList(beerPage
+                .getContent()
+                .stream()
+                .map(beerMapper::beerToBeerDto)
+                .collect(Collectors.toList()),
+                PageRequest
+                        .of(beerPage.getPageable().getPageNumber(),
+                                beerPage.getPageable().getPageSize()),
+                beerPage.getTotalElements());
+    }
 
     @Override
     public BeerDto getById(UUID beerId) {
