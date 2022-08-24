@@ -12,6 +12,8 @@ import rocks.basset.msscbeerservice.events.NewInventoryEvent;
 import rocks.basset.msscbeerservice.repositories.BeerRepository;
 import rocks.basset.msscbeerservice.web.model.BeerDto;
 
+import javax.transaction.Transactional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -20,6 +22,7 @@ public class BrewBeerListener {
     private final BeerRepository beerRepository;
     private final JmsTemplate jmsTemplate;
 
+    @Transactional
     @JmsListener(destination = JmsConfig.BREWERY_REQUEST_QUEUE)
     public void listen(BrewBeerEvent event) {
         BeerDto beerDto = event.getBeerDto();
