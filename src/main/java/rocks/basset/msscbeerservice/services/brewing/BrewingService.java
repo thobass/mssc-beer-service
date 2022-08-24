@@ -1,4 +1,4 @@
-package rocks.basset.msscbeerservice.services;
+package rocks.basset.msscbeerservice.services.brewing;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
