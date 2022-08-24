@@ -9,8 +9,10 @@ import org.springframework.jms.support.converter.MessageType;
 @Configuration
 public class JmsConfig {
 
+    public static final String BREWERY_REQUEST_QUEUE = "brewing-request";
+
     @Bean
-    public MessageConverter messageConverter(){
+    public MessageConverter messageConverter() {
         var converter = new MappingJackson2MessageConverter();
         converter.setTargetType(MessageType.TEXT);
         converter.setTypeIdPropertyName("_type");
