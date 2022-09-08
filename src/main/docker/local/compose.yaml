@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  jms:
+    image: quay.io/artemiscloud/activemq-artemis-broker
+    ports:
+      - '8161:8161'
+      - '61616:61616'
+      - '5672:5672'
+    environment:
+      AMQ_USER: admin
+      AMQ_PASSWORD: admin
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - '9411:9411'
